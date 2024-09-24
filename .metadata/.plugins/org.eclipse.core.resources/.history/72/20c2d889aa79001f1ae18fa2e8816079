@@ -1,0 +1,26 @@
+package com.baq.landinpage.Service;
+
+import com.baq.landinpage.Model.EmailRequest;
+import com.baq.landinpage.Repo.EmailRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+@Service
+public class NotificationService {
+
+    @Autowired
+    private EmailRepo emailRepo;
+
+    public ResponseEntity<String> saveEmail(EmailRequest emailRequest) {
+        try {
+            emailRepo.save(emailRequest);
+            return ResponseEntity.ok("Email saved successfully!");
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body("Email already exists.");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("An error occurred: " + e.getMessage());
+        }
+    }
+}
